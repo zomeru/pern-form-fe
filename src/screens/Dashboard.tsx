@@ -1,7 +1,7 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useMutation } from "@apollo/client";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { startCase, uniq } from "lodash";
 
 import { SubmissionsQuery } from "../graphql";
@@ -17,12 +17,11 @@ const Dashboard: React.FC = () => {
     }
   `);
 
-  console.log({
-    data,
-    error,
-    loading,
-  });
-
+  const [generateSubmission] = useMutation(gql`
+    mutation GenerateSubmissions($count: Int!) {
+      queueSubmissionGeneration(count: $count)
+    }
+  `);
   const { submissions } = data || { submissions: [] };
 
   const columns: GridColDef[] = [
@@ -37,19 +36,34 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ height: "95vh", width: "100%" }}>
-      {data && submissions && (
-        <DataGrid
-          rows={submissions}
-          columns={columns}
-          // pageSize={5}
-          // rowsPerPageOptions={[5]}
-          checkboxSelection
-          disableSelectionOnClick
-          experimentalFeatures={{ newEditingApi: true }}
-        />
-      )}
-    </Box>
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+      }}
+    >
+      <Box sx={{ height: "100%", width: "100%" }}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            generateSubmission({ variables: { count: 10 } });
+          }}
+        >
+          Generate Submissions
+        </Button>
+        {data && submissions && (
+          <DataGrid
+            rows={submissions}
+            columns={columns}
+            // pageSize={5}
+            // rowsPerPageOptions={[5]}
+            checkboxSelection
+            disableSelectionOnClick
+            experimentalFeatures={{ newEditingApi: true }}
+          />
+        )}
+      </Box>
+    </div>
   );
 };
 

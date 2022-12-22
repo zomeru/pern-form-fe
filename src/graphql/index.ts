@@ -17,6 +17,16 @@ export type Scalars = {
   JSON: any;
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  queueSubmissionGeneration: Scalars['Boolean'];
+};
+
+
+export type MutationQueueSubmissionGenerationArgs = {
+  count?: InputMaybe<Scalars['Int']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
